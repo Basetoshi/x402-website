@@ -244,9 +244,7 @@ if (walletProvider) {
         if (accounts.length === 0) {
             location.reload();
         } else {
-            userAddress = accounts[0];
-            walletAddressEl.textContent = `Connected: ${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`;
-            loadContractData();
+            location.reload();
         }
     });
     
