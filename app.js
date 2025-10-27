@@ -151,6 +151,15 @@ async function loadContractData() {
         if (userBalance.gte(maxPerWallet)) {
             showMessage('You have reached the maximum mint limit', 'error');
             approveBtn.disabled = true;
+            return;
+        }
+        
+        // Check if USDC is already approved
+        const currentAllowance = await usdcContract.allowance(userAddress, CONTRACT_ADDRESS);
+        if (currentAllowance.gt(0)) {
+            // Already approved - change button text
+            approveBtn.textContent = 'Mint (USDC Already Approved)';
+            showMessage('USDC already approved! You can mint', 'success');
         }
         
     } catch (error) {
@@ -165,15 +174,23 @@ approveBtn.addEventListener('click', async () => {
         const pricePerNFT = 3;
         const totalCost = ethers.utils.parseUnits((quantity * pricePerNFT).toString(), 6);
         
-        // Step 1: Approve USDC
-        showMessage('Approving USDC... Confirm in wallet', 'info');
         approveBtn.disabled = true;
         
-        const approveTx = await usdcContract.approve(CONTRACT_ADDRESS, totalCost);
-        showMessage('Approval pending...', 'info');
-        await approveTx.wait();
+        // Check current allowance
+        const currentAllowance = await usdcContract.allowance(userAddress, CONTRACT_ADDRESS);
         
-        showMessage('USDC approved! Now minting...', 'success');
+        // Step 1: Approve USDC if needed
+        if (currentAllowance.lt(totalCost)) {
+            showMessage('Approving USDC... Confirm in wallet', 'info');
+            
+            const approveTx = await usdcContract.approve(CONTRACT_ADDRESS, totalCost);
+            showMessage('Approval pending...', 'info');
+            await approveTx.wait();
+            
+            showMessage('USDC approved! Now minting...', 'success');
+        } else {
+            showMessage('USDC already approved! Minting...', 'info');
+        }
         
         // Step 2: Mint NFT
         showMessage('Minting... Confirm in wallet', 'info');
