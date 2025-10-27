@@ -168,19 +168,30 @@ approveBtn.addEventListener('click', async () => {
         const mintPrice = await contract.MINT_PRICE();
         const totalCost = mintPrice.mul(quantity);
         
+        // Check USDC balance
         const usdcBalance = await usdcContract.balanceOf(userAddress);
+        const ethBalance = await provider.getBalance(userAddress);
+        
+        console.log('USDC Balance:', ethers.utils.formatUnits(usdcBalance, 6));
+        console.log('ETH Balance:', ethers.utils.formatEther(ethBalance));
+        console.log('Required USDC:', ethers.utils.formatUnits(totalCost, 6));
+        
         if (usdcBalance.lt(totalCost)) {
-            showMessage('Insufficient USDC balance', 'error');
+            showMessage(`Insufficient USDC. Need ${ethers.utils.formatUnits(totalCost, 6)} USDC`, 'error');
             return;
         }
         
-        showMessage('Approving USDC... Please confirm in MetaMask', 'info');
+        if (ethBalance.lt(ethers.utils.parseEther('0.0001'))) {
+            showMessage('Insufficient ETH for gas fees', 'error');
+            return;
+        }
+        
+        showMessage('Approving USDC... Confirm in wallet', 'info');
         approveBtn.disabled = true;
         
         const tx = await usdcContract.approve(CONTRACT_ADDRESS, totalCost);
         
         showMessage('Approval pending...', 'info');
-        messageEl.innerHTML = 'Approval pending... <span class="loading"></span>';
         
         await tx.wait();
         
@@ -191,7 +202,17 @@ approveBtn.addEventListener('click', async () => {
         
     } catch (error) {
         console.error('Approval error:', error);
-        showMessage(`Approval failed: ${error.message}`, 'error');
+        
+        let errorMessage = 'Approval failed';
+        if (error.code === 4001) {
+            errorMessage = 'Transaction rejected by user';
+        } else if (error.message.includes('insufficient funds')) {
+            errorMessage = 'Insufficient ETH for gas';
+        } else if (error.message.includes('execution reverted')) {
+            errorMessage = 'Contract error - check USDC balance';
+        }
+        
+        showMessage(errorMessage, 'error');
         approveBtn.disabled = false;
     }
 });
@@ -201,13 +222,12 @@ mintBtn.addEventListener('click', async () => {
     try {
         const quantity = parseInt(quantitySlider.value);
         
-        showMessage('Minting... Please confirm in MetaMask', 'info');
+        showMessage('Minting... Confirm in wallet', 'info');
         mintBtn.disabled = true;
         
         const tx = await contract.mint(quantity);
         
         showMessage('Minting in progress...', 'info');
-        messageEl.innerHTML = 'Minting in progress... <span class="loading"></span>';
         
         const receipt = await tx.wait();
         
@@ -220,7 +240,17 @@ mintBtn.addEventListener('click', async () => {
         
     } catch (error) {
         console.error('Minting error:', error);
-        showMessage(`Minting failed: ${error.message}`, 'error');
+        
+        let errorMessage = 'Minting failed';
+        if (error.code === 4001) {
+            errorMessage = 'Transaction rejected by user';
+        } else if (error.message.includes('insufficient funds')) {
+            errorMessage = 'Insufficient ETH for gas';
+        } else if (error.message.includes('exceeds balance')) {
+            errorMessage = 'Insufficient USDC balance';
+        }
+        
+        showMessage(errorMessage, 'error');
         mintBtn.disabled = false;
     }
 });
