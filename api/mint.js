@@ -1,0 +1,76 @@
+// x402Cats API endpoint - Single mint (3 USDC)
+// Place this file in: /api/mint.js
+
+export default function handler(req, res) {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-402-Payer');
+
+  // Handle OPTIONS request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  // x402 schema for single mint
+  const x402Schema = {
+    "x402Version": 1,
+    "accepts": [
+      {
+        "scheme": "exact",
+        "network": "base",
+        "chainId": 8453,
+        "maxAmountRequired": "3000000",
+        "resource": "https://x402-website.vercel.app/api/mint",
+        "description": "Mint 1 x402Cats NFT (Gasless via PayAI)",
+        "mimeType": "application/json",
+        "payTo": "0x86F81966e14dA17193CC3F3d6903184730F36681",
+        "maxTimeoutSeconds": 300,
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "facilitator": "https://facilitator.payai.network",
+        "outputSchema": {
+          "input": {
+            "type": "http",
+            "method": "POST",
+            "headerFields": {
+              "X-402-Payer": {
+                "type": "string",
+                "required": true,
+                "description": "Wallet address of the payer (set by facilitator)"
+              }
+            }
+          },
+          "output": {
+            "success": {
+              "type": "boolean"
+            },
+            "transactionHash": {
+              "type": "string"
+            },
+            "tokenIds": {
+              "type": "array"
+            },
+            "message": {
+              "type": "string"
+            },
+            "recipient": {
+              "type": "string"
+            }
+          }
+        },
+        "extra": {
+          "contractAddress": "0x86F81966e14dA17193CC3F3d6903184730F36681",
+          "network": "base",
+          "chainId": 8453,
+          "quantity": 1,
+          "mintFunction": "mint",
+          "maxPerWallet": 20,
+          "totalSupply": 5555,
+          "pricePerNFT": "3000000"
+        }
+      }
+    ]
+  };
+
+  return res.status(402).json(x402Schema);
+}
