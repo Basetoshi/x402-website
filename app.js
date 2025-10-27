@@ -8,7 +8,6 @@ const CONTRACT_ABI = [
     'function MAX_PER_WALLET() view returns (uint256)',
     'function totalSupply() view returns (uint256)',
     'function MAX_SUPPLY() view returns (uint256)',
-    'function MINT_PRICE() view returns (uint256)',
     'function balanceOf(address owner) view returns (uint256)'
 ];
 
@@ -165,26 +164,8 @@ async function loadContractData() {
 approveBtn.addEventListener('click', async () => {
     try {
         const quantity = parseInt(quantitySlider.value);
-        const mintPrice = await contract.MINT_PRICE();
-        const totalCost = mintPrice.mul(quantity);
-        
-        // Check USDC balance
-        const usdcBalance = await usdcContract.balanceOf(userAddress);
-        const ethBalance = await provider.getBalance(userAddress);
-        
-        console.log('USDC Balance:', ethers.utils.formatUnits(usdcBalance, 6));
-        console.log('ETH Balance:', ethers.utils.formatEther(ethBalance));
-        console.log('Required USDC:', ethers.utils.formatUnits(totalCost, 6));
-        
-        if (usdcBalance.lt(totalCost)) {
-            showMessage(`Insufficient USDC. Need ${ethers.utils.formatUnits(totalCost, 6)} USDC`, 'error');
-            return;
-        }
-        
-        if (ethBalance.lt(ethers.utils.parseEther('0.0001'))) {
-            showMessage('Insufficient ETH for gas fees', 'error');
-            return;
-        }
+        const pricePerNFT = 3; // 3 USDC per NFT
+        const totalCost = ethers.utils.parseUnits((quantity * pricePerNFT).toString(), 6);
         
         showMessage('Approving USDC... Confirm in wallet', 'info');
         approveBtn.disabled = true;
@@ -195,7 +176,7 @@ approveBtn.addEventListener('click', async () => {
         
         await tx.wait();
         
-        showMessage('USDC approved! You can now mint', 'success');
+        showMessage('USDC approved! You can now mint ✅', 'success');
         
         mintBtn.style.display = 'block';
         mintBtn.disabled = false;
@@ -203,13 +184,12 @@ approveBtn.addEventListener('click', async () => {
     } catch (error) {
         console.error('Approval error:', error);
         
-        let errorMessage = 'Approval failed';
-        if (error.code === 4001) {
-            errorMessage = 'Transaction rejected by user';
-        } else if (error.message.includes('insufficient funds')) {
-            errorMessage = 'Insufficient ETH for gas';
-        } else if (error.message.includes('execution reverted')) {
-            errorMessage = 'Contract error - check USDC balance';
+        let errorMessage = 'You need USDC to mint';
+        
+        if (error.code === 4001 || error.code === 'ACTION_REJECTED') {
+            errorMessage = 'Transaction cancelled';
+        } else if (error.message && error.message.includes('insufficient funds')) {
+            errorMessage = 'You need ETH for gas fees';
         }
         
         showMessage(errorMessage, 'error');
@@ -242,12 +222,13 @@ mintBtn.addEventListener('click', async () => {
         console.error('Minting error:', error);
         
         let errorMessage = 'Minting failed';
-        if (error.code === 4001) {
-            errorMessage = 'Transaction rejected by user';
-        } else if (error.message.includes('insufficient funds')) {
-            errorMessage = 'Insufficient ETH for gas';
-        } else if (error.message.includes('exceeds balance')) {
-            errorMessage = 'Insufficient USDC balance';
+        
+        if (error.code === 4001 || error.code === 'ACTION_REJECTED') {
+            errorMessage = 'Transaction cancelled';
+        } else if (error.message && error.message.includes('insufficient funds')) {
+            errorMessage = 'You need ETH for gas fees';
+        } else if (error.message && error.message.includes('exceeds balance')) {
+            errorMessage = 'You need more USDC';
         }
         
         showMessage(errorMessage, 'error');
