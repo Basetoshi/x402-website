@@ -3,272 +3,708 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Cats x402 - NFT Collection on Base</title>
-    <meta name="description" content="5555 unique pixel cats on Base blockchain. Mint with USDC powered by x402 protocol.">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <title>x402Cats - Mint Your Pixel Cat NFT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #fff, #f3e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255,255,255,0.3);
+        }
+        
+        nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+        
+        nav a:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+        
+        /* Language Switcher */
+        .language-switcher {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .lang-btn {
+            padding: 6px 12px;
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .lang-btn:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .lang-btn.active {
+            color: #fff;
+            background: rgba(255,255,255,0.2);
+            box-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+        }
+        
+        .hero h1 {
+            font-size: 64px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 50px rgba(255,255,255,0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255,255,255,0.5); }
+            to { text-shadow: 0 0 40px rgba(255,255,255,0.8); }
+        }
+        
+        .hero p {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        /* Gallery */
+        .gallery-section {
+            margin: 60px 0;
+            overflow: hidden;
+        }
+        
+        .gallery-track {
+            display: flex;
+            gap: 20px;
+            animation: scroll 30s linear infinite;
+        }
+        
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        .gallery-item {
+            min-width: 250px;
+            height: 250px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Mint Section */
+        .mint-section {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 60px;
+            margin: 60px 0;
+            border: 2px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .mint-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .nft-preview {
+            text-align: center;
+        }
+        
+        .nft-image {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            border: 5px solid rgba(255,255,255,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            margin-bottom: 20px;
+        }
+        
+        .mint-form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .mint-form h2 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        /* Quantity Slider */
+        .quantity-control {
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        
+        .quantity-control label {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        #maxPerWallet {
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+            font-weight: 400;
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .quantity-slider {
+            flex: 1;
+            height: 8px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .quantity-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+            transition: all 0.3s;
+        }
+        
+        .quantity-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.8);
+        }
+        
+        .quantity-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+            border: none;
+            transition: all 0.3s;
+        }
+        
+        .quantity-slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.8);
+        }
+        
+        .quantity-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .price-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        #totalPrice {
+            color: #4ade80;
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+        }
+        
+        .wallet-info {
+            padding: 15px;
+            background: rgba(74, 222, 128, 0.2);
+            border: 2px solid #4ade80;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .btn {
+            padding: 18px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #06b6d4, #0891b2);
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.4);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(6, 182, 212, 0.6);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 80px 0;
+        }
+        
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid rgba(255,255,255,0.2);
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.4);
+        }
+        
+        .feature-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card p {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 0 30px;
+            border-top: 2px solid rgba(255,255,255,0.1);
+            margin-top: 80px;
+        }
+        
+        footer p {
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+        
+        .contract-link {
+            color: #4ade80;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .contract-link:hover {
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+        
+        .message.success {
+            background: rgba(74, 222, 128, 0.2);
+            border: 2px solid #4ade80;
+        }
+        
+        .message.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+        }
+        
+        .message.info {
+            background: rgba(59, 130, 246, 0.2);
+            border: 2px solid #3b82f6;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mint-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 40px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .language-switcher {
+                order: -1;
+                margin-bottom: 10px;
+            }
+            
+            nav {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="background-container">
-        <div class="gradient-bg"></div>
-        <canvas id="particles"></canvas>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <span class="logo-text">🐱 PIXEL CATS x402</span>
-            </div>
-            <div class="nav-links">
-                <a href="#mint" class="nav-link active">Mint</a>
-                <a href="#" class="nav-link disabled" title="Coming Soon">
-                    <span>Staking</span>
-                    <span class="lock-icon">🔒</span>
-                </a>
-                <a href="#" class="nav-link disabled" title="Coming Soon">
-                    <span>Claim x402CAT Token</span>
-                    <span class="lock-icon">🔒</span>
-                </a>
-                <a href="https://basescan.org/address/0x86F81966e14dA17193CC3F3d6903184730F36681" 
-                   target="_blank" 
-                   class="nav-link"
-                   rel="noopener noreferrer">
-                    Contract
-                </a>
-                <button id="connectWallet" class="connect-button">
-                    Connect Wallet
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">
-                <span class="title-line">PIXEL CATS</span>
-                <span class="title-line gradient-text">x402</span>
-            </h1>
-            <p class="hero-subtitle">
-                5555 Unique Cats • Base Blockchain • x402 Protocol
-            </p>
-            
-            <!-- Stats Cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Minted</div>
-                    <div class="stat-value" id="mintedCount">0/5555</div>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">x402Cats 🐱</div>
+            <nav>
+                <a href="#home" data-en="Home" data-zh="首页">Home</a>
+                <a href="#mint" data-en="Mint" data-zh="铸造">Mint</a>
+                <a href="#features" data-en="Features" data-zh="特点">Features</a>
+                <div class="social-links">
+                    <a href="https://x.com/Catsx402" target="_blank" title="Twitter">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                    </a>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Price</div>
-                    <div class="stat-value">3 USDC</div>
+                <div class="language-switcher">
+                    <button class="lang-btn active" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="zh">中文</button>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Network</div>
-                    <div class="stat-value">Base ⚡</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Max/Wallet</div>
-                    <div class="stat-value">20 NFTs</div>
-                </div>
-            </div>
-
-            <a href="#mint" class="cta-button">
-                <span>MINT NOW</span>
-                <span class="button-glow"></span>
-            </a>
-        </div>
-    </section>
-
-    <!-- Scrolling Gallery -->
-    <section class="gallery-section">
-        <div class="gallery-scroll">
-            <div class="gallery-track" id="galleryTrack">
-                <!-- NFT cards will be added here by JS -->
+            </nav>
+        </header>
+        
+        <!-- Hero -->
+        <section class="hero" id="home">
+            <h1 data-en="Pixel Cats x402" data-zh="像素猫 x402">Pixel Cats x402</h1>
+            <p data-en="5,555 Unique Pixel Cats on Base Blockchain" data-zh="5,555 个独特的像素猫在 Base 区块链上">5,555 Unique Pixel Cats on Base Blockchain</p>
+        </section>
+        
+        <!-- Gallery -->
+        <div class="gallery-section">
+            <div class="gallery-track">
+                <div class="gallery-item"><img src="https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/1.png" alt="Cat 1"></div>
+                <div class="gallery-item"><img src="https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/100.png" alt="Cat 100"></div>
+                <div class="gallery-item"><img src="https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/200.png" alt="Cat 200"></div>
+                <div class="gallery-item"><img src="https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/300.png" alt="Cat 300"></div>
+                <div class="gallery-item"><img src="https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/400.png" alt="Cat 400"></div>
+                <div class="gallery-item"><img src="https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/500.png" alt="Cat 500"></div>
+                <div class="gallery-item"><img src="https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/1.png" alt="Cat 1"></div>
+                <div class="gallery-item"><img src="https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/100.png" alt="Cat 100"></div>
+                <div class="gallery-item"><img src="https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/200.png" alt="Cat 200"></div>
+                <div class="gallery-item"><img src="https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/300.png" alt="Cat 300"></div>
+                <div class="gallery-item"><img src="https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/400.png" alt="Cat 400"></div>
+                <div class="gallery-item"><img src="https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/500.png" alt="Cat 500"></div>
             </div>
         </div>
-    </section>
-
-    <!-- Mint Section -->
-    <section id="mint" class="mint-section">
-        <div class="mint-container">
-            <h2 class="section-title">Mint Your Pixel Cat</h2>
-            
-            <div class="mint-card">
-                <!-- Left: Preview -->
-                <div class="mint-preview">
-                    <div class="preview-image">
-                        <img src="https://gateway.lighthouse.storage/ipfs/bafybeiaa2nnwqbbnwfansu4gevlo4zmsjxgsivutnsfeat3mbyoxenprnu/1.png" 
-                             alt="Pixel Cat Preview" 
-                             id="previewImage">
-                    </div>
-                    <div class="preview-info">
-                        <div class="info-row">
-                            <span>Token ID</span>
-                            <span id="nextTokenId">#1</span>
-                        </div>
-                    </div>
+        
+        <!-- Mint Section -->
+        <section class="mint-section" id="mint">
+            <div class="mint-content">
+                <div class="nft-preview">
+                    <img src="https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/1.png" alt="x402Cat NFT" class="nft-image" id="previewImage">
                 </div>
-
-                <!-- Right: Mint Interface -->
-                <div class="mint-interface">
-                    <!-- Connection Status -->
-                    <div class="connection-status" id="connectionStatus">
-                        <div class="status-dot"></div>
-                        <span>Not Connected</span>
-                    </div>
-
-                    <!-- Progress Bar -->
-                    <div class="progress-container">
-                        <div class="progress-label">
-                            <span>Minting Progress</span>
-                            <span id="progressText">0/5555</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-                        </div>
-                    </div>
-
-                    <!-- Quantity Selector -->
-                    <div class="quantity-selector">
-                        <label>Quantity</label>
-                        <div class="quantity-controls">
-                            <button class="quantity-btn" id="decreaseBtn">−</button>
-                            <input type="number" 
-                                   id="quantity" 
-                                   value="1" 
+                
+                <div class="mint-form">
+                    <h2 data-en="Mint Your Cat" data-zh="铸造你的猫">Mint Your Cat</h2>
+                    
+                    <!-- Quantity Slider -->
+                    <div class="quantity-control">
+                        <label for="quantitySlider">
+                            <span data-en="Quantity:" data-zh="数量：">Quantity:</span> 
+                            <span id="maxPerWallet" data-en="(Max 20 per wallet)" data-zh="(每个钱包最多 20 个)">(Max 20 per wallet)</span>
+                        </label>
+                        <div class="slider-container">
+                            <input type="range" 
+                                   id="quantitySlider" 
+                                   class="quantity-slider" 
                                    min="1" 
                                    max="20" 
-                                   readonly>
-                            <button class="quantity-btn" id="increaseBtn">+</button>
-                        </div>
-                        <div class="quantity-info">Max 20 per transaction</div>
-                    </div>
-
-                    <!-- Price Calculator -->
-                    <div class="price-display">
-                        <div class="price-row">
-                            <span>Total Price</span>
-                            <span class="price-value" id="totalPrice">3 USDC</span>
+                                   value="1">
+                            <div class="quantity-display" id="quantityDisplay">1</div>
                         </div>
                     </div>
-
-                    <!-- Mint Buttons -->
-                    <div class="mint-actions">
-                        <button id="approveBtn" class="action-button approve-button" disabled>
-                            <span class="button-text">1. Approve USDC</span>
-                            <span class="button-icon">🔓</span>
-                        </button>
-                        <button id="mintBtn" class="action-button mint-button" disabled>
-                            <span class="button-text">2. Mint NFT</span>
-                            <span class="button-icon">🎨</span>
-                        </button>
+                    
+                    <div class="price-info">
+                        <span data-en="Total Price:" data-zh="总价格：">Total Price:</span>
+                        <span id="totalPrice">3 USDC</span>
                     </div>
-
-                    <!-- Transaction Status -->
-                    <div id="txStatus" class="tx-status hidden"></div>
+                    
+                    <div id="walletAddress" class="wallet-info" style="display: none;"></div>
+                    
+                    <button class="btn btn-primary" id="connectBtn" data-en="Connect Wallet" data-zh="连接钱包">Connect Wallet</button>
+                    <button class="btn btn-secondary" id="approveBtn" style="display: none;" disabled data-en="Approve USDC" data-zh="批准 USDC">Approve USDC</button>
+                    <button class="btn btn-primary" id="mintBtn" style="display: none;" disabled data-en="Mint Now" data-zh="立即铸造">Mint Now</button>
+                    
+                    <div id="message"></div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features-section">
-        <div class="features-container">
+        </section>
+        
+        <!-- Features -->
+        <section class="features" id="features">
             <div class="feature-card">
                 <div class="feature-icon">🎨</div>
-                <h3>Unique Traits</h3>
-                <p>Each cat has 8 trait categories with varying rarities</p>
+                <h3 data-en="Unique Artwork" data-zh="独特的艺术品">Unique Artwork</h3>
+                <p data-en="5,555 randomly generated pixel cats with unique traits and personalities" data-zh="5,555 个随机生成的像素猫，具有独特的特征和个性">5,555 randomly generated pixel cats with unique traits and personalities</p>
             </div>
+            
             <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3>x402 Protocol</h3>
-                <p>Built on x402 for seamless USDC payments and future utilities</p>
+                <div class="feature-icon">⛓️</div>
+                <h3 data-en="Base Chain" data-zh="Base 链">Base Chain</h3>
+                <p data-en="Built on Base blockchain for fast and low-cost transactions" data-zh="建立在 Base 区块链上，实现快速且低成本的交易">Built on Base blockchain for fast and low-cost transactions</p>
             </div>
+            
             <div class="feature-card">
-                <div class="feature-icon">🔵</div>
-                <h3>Base Network</h3>
-                <p>Fast transactions, low fees, and strong infrastructure</p>
+                <div class="feature-icon">💎</div>
+                <h3 data-en="Fair Launch" data-zh="公平发布">Fair Launch</h3>
+                <p data-en="3 USDC per mint, maximum 20 cats per wallet for fair distribution" data-zh="每次铸造 3 USDC，每个钱包最多 20 只猫，公平分配">3 USDC per mint, maximum 20 cats per wallet for fair distribution</p>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">👥</div>
-                <h3>Community Owned</h3>
-                <p>3% royalties, staking rewards, and governance token coming soon</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Roadmap Section -->
-    <section class="roadmap-section">
-        <h2 class="section-title">Roadmap</h2>
-        <div class="roadmap-container">
-            <div class="roadmap-item completed">
-                <div class="roadmap-icon">✓</div>
-                <div class="roadmap-content">
-                    <h3>Phase 1: Launch</h3>
-                    <p>Collection deployed on Base • Metadata on IPFS • Listed on OpenSea</p>
-                </div>
-            </div>
-            <div class="roadmap-item">
-                <div class="roadmap-icon">🔒</div>
-                <div class="roadmap-content">
-                    <h3>Phase 2: Staking</h3>
-                    <p>Stake your cats to earn rewards • Multiple reward tiers</p>
-                </div>
-            </div>
-            <div class="roadmap-item">
-                <div class="roadmap-icon">🔒</div>
-                <div class="roadmap-content">
-                    <h3>Phase 3: x402CAT Token</h3>
-                    <p>Launch utility token • Claim rewards • Exclusive benefits</p>
-                </div>
-            </div>
-            <div class="roadmap-item">
-                <div class="roadmap-icon">🔒</div>
-                <div class="roadmap-content">
-                    <h3>Phase 4: DAO</h3>
-                    <p>Community governance • Vote on future development</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Pixel Cats x402</h3>
-                <p>5555 unique pixel cats on Base blockchain</p>
-            </div>
-            <div class="footer-section">
-                <h4>Links</h4>
-                <a href="https://opensea.io/collection/x402cats" target="_blank">OpenSea</a>
-                <a href="https://basescan.org/address/0x86F81966e14dA17193CC3F3d6903184730F36681" target="_blank">Contract</a>
-                <a href="https://www.x402scan.com" target="_blank">x402scan</a>
-            </div>
-            <div class="footer-section">
-                <h4>Community</h4>
-                <a href="#" target="_blank">Twitter</a>
-                <a href="#" target="_blank">Discord</a>
-                <a href="#" target="_blank">Telegram</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>Built on Base ⚡ • Powered by x402 Protocol</p>
-            <p>Contract: 0x86F8...6681</p>
-        </div>
-    </footer>
-
-    <!-- Confetti Container -->
-    <canvas id="confetti" class="confetti-canvas"></canvas>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js"></script>
+        </section>
+        
+        <!-- Footer -->
+        <footer>
+            <p data-en="© 2024 x402Cats. All rights reserved." data-zh="© 2024 x402Cats. 保留所有权利。">© 2024 x402Cats. All rights reserved.</p>
+            <a href="https://basescan.org/address/0x86F81966e14dA17193CC3F3d6903184730F36681" target="_blank" class="contract-link" data-en="View Contract on BaseScan" data-zh="在 BaseScan 上查看合约">
+                View Contract on BaseScan
+            </a>
+        </footer>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <script src="app.js"></script>
+    
+    <script>
+        // Language Switcher
+        const translations = {
+            en: {
+                'Home': 'Home',
+                'Mint': 'Mint',
+                'Features': 'Features',
+                'Pixel Cats x402': 'Pixel Cats x402',
+                '5,555 Unique Pixel Cats on Base Blockchain': '5,555 Unique Pixel Cats on Base Blockchain',
+                'Mint Your Cat': 'Mint Your Cat',
+                'Quantity:': 'Quantity:',
+                '(Max 20 per wallet)': '(Max 20 per wallet)',
+                'Total Price:': 'Total Price:',
+                'Connect Wallet': 'Connect Wallet',
+                'Approve USDC': 'Approve USDC',
+                'Mint Now': 'Mint Now',
+                'Unique Artwork': 'Unique Artwork',
+                '5,555 randomly generated pixel cats with unique traits and personalities': '5,555 randomly generated pixel cats with unique traits and personalities',
+                'Base Chain': 'Base Chain',
+                'Built on Base blockchain for fast and low-cost transactions': 'Built on Base blockchain for fast and low-cost transactions',
+                'Fair Launch': 'Fair Launch',
+                '3 USDC per mint, maximum 20 cats per wallet for fair distribution': '3 USDC per mint, maximum 20 cats per wallet for fair distribution',
+                '© 2024 x402Cats. All rights reserved.': '© 2024 x402Cats. All rights reserved.',
+                'View Contract on BaseScan': 'View Contract on BaseScan'
+            },
+            zh: {
+                'Home': '首页',
+                'Mint': '铸造',
+                'Features': '特点',
+                'Pixel Cats x402': '像素猫 x402',
+                '5,555 Unique Pixel Cats on Base Blockchain': '5,555 个独特的像素猫在 Base 区块链上',
+                'Mint Your Cat': '铸造你的猫',
+                'Quantity:': '数量：',
+                '(Max 20 per wallet)': '(每个钱包最多 20 个)',
+                'Total Price:': '总价格：',
+                'Connect Wallet': '连接钱包',
+                'Approve USDC': '批准 USDC',
+                'Mint Now': '立即铸造',
+                'Unique Artwork': '独特的艺术品',
+                '5,555 randomly generated pixel cats with unique traits and personalities': '5,555 个随机生成的像素猫，具有独特的特征和个性',
+                'Base Chain': 'Base 链',
+                'Built on Base blockchain for fast and low-cost transactions': '建立在 Base 区块链上，实现快速且低成本的交易',
+                'Fair Launch': '公平发布',
+                '3 USDC per mint, maximum 20 cats per wallet for fair distribution': '每次铸造 3 USDC，每个钱包最多 20 只猫，公平分配',
+                '© 2024 x402Cats. All rights reserved.': '© 2024 x402Cats. 保留所有权利。',
+                'View Contract on BaseScan': '在 BaseScan 上查看合约'
+            }
+        };
+        
+        let currentLang = 'en';
+        
+        function switchLanguage(lang) {
+            currentLang = lang;
+            
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Update all translatable elements
+            document.querySelectorAll('[data-en]').forEach(el => {
+                const key = el.dataset.en;
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            
+            // Save preference
+            localStorage.setItem('preferred-language', lang);
+        }
+        
+        // Language button click handlers
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchLanguage(btn.dataset.lang);
+            });
+        });
+        
+        // Load saved language preference
+        const savedLang = localStorage.getItem('preferred-language');
+        if (savedLang) {
+            switchLanguage(savedLang);
+        }
+        
+        // Quantity slider
+        const slider = document.getElementById('quantitySlider');
+        const quantityDisplay = document.getElementById('quantityDisplay');
+        const totalPriceDisplay = document.getElementById('totalPrice');
+        const pricePerNFT = 3;
+        
+        slider.addEventListener('input', function() {
+            const quantity = this.value;
+            quantityDisplay.textContent = quantity;
+            totalPriceDisplay.textContent = (quantity * pricePerNFT) + ' USDC';
+        });
+        
+        // Preview image rotation
+        const previewImages = [
+            'https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/1.png',
+            'https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/50.png',
+            'https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/100.png',
+            'https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/150.png',
+            'https://gateway.lighthouse.storage/ipfs/bafybeigkdmpfwjjuuqe5ssvvvwegf7dvpwnqfhbxonxopkrz6vkrz7rfhy/200.png'
+        ];
+        
+        let currentImageIndex = 0;
+        setInterval(() => {
+            currentImageIndex = (currentImageIndex + 1) % previewImages.length;
+            document.getElementById('previewImage').src = previewImages[currentImageIndex];
+        }, 3000);
+    </script>
 </body>
 </html>
