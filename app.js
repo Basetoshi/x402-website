@@ -212,16 +212,22 @@ const walletProvider = window.rabby || window.phantom?.ethereum || window.Binanc
 
 if (walletProvider) {
     walletProvider.on('accountsChanged', (accounts) => {
-        if (accounts.length === 0) {
-            // User disconnected wallet - reload page to reset state
-            location.reload();
-        } else {
-            // User switched account - reload page to allow reconnecting
-            location.reload();
-        }
+        // Always reload when account changes - user needs to reconnect manually
+        location.reload();
     });
     
     walletProvider.on('chainChanged', () => {
         location.reload();
     });
+    
+    // Prevent auto-connect on page load
+    walletProvider.on('connect', () => {
+        console.log('Wallet connected');
+    });
 }
+
+// Clear any cached connection on page load
+window.addEventListener('load', () => {
+    // Don't auto-connect wallet on page refresh
+    console.log('Page loaded - wallet connection requires user action');
+});
