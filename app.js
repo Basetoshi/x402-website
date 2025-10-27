@@ -28,7 +28,6 @@ let userAddress;
 // Elements
 const connectBtn = document.getElementById('connectBtn');
 const approveBtn = document.getElementById('approveBtn');
-const mintBtn = document.getElementById('mintBtn');
 const walletAddressEl = document.getElementById('walletAddress');
 const messageEl = document.getElementById('message');
 const quantitySlider = document.getElementById('quantitySlider');
@@ -152,7 +151,6 @@ async function loadContractData() {
         if (userBalance.gte(maxPerWallet)) {
             showMessage('You have reached the maximum mint limit', 'error');
             approveBtn.disabled = true;
-            mintBtn.disabled = true;
         }
         
     } catch (error) {
@@ -160,68 +158,41 @@ async function loadContractData() {
     }
 }
 
-// Approve USDC
+// Approve USDC and Mint
 approveBtn.addEventListener('click', async () => {
     try {
         const quantity = parseInt(quantitySlider.value);
-        const pricePerNFT = 3; // 3 USDC per NFT
+        const pricePerNFT = 3;
         const totalCost = ethers.utils.parseUnits((quantity * pricePerNFT).toString(), 6);
         
+        // Step 1: Approve USDC
         showMessage('Approving USDC... Confirm in wallet', 'info');
         approveBtn.disabled = true;
         
-        const tx = await usdcContract.approve(CONTRACT_ADDRESS, totalCost);
-        
+        const approveTx = await usdcContract.approve(CONTRACT_ADDRESS, totalCost);
         showMessage('Approval pending...', 'info');
+        await approveTx.wait();
         
-        await tx.wait();
+        showMessage('USDC approved! Now minting...', 'success');
         
-        showMessage('USDC approved! You can now mint ✅', 'success');
-        
-        mintBtn.style.display = 'block';
-        mintBtn.disabled = false;
-        
-    } catch (error) {
-        console.error('Approval error:', error);
-        
-        let errorMessage = 'You need USDC to mint';
-        
-        if (error.code === 4001 || error.code === 'ACTION_REJECTED') {
-            errorMessage = 'Transaction cancelled';
-        } else if (error.message && error.message.includes('insufficient funds')) {
-            errorMessage = 'You need ETH for gas fees';
-        }
-        
-        showMessage(errorMessage, 'error');
-        approveBtn.disabled = false;
-    }
-});
-
-// Mint NFT
-mintBtn.addEventListener('click', async () => {
-    try {
-        const quantity = parseInt(quantitySlider.value);
-        
+        // Step 2: Mint NFT
         showMessage('Minting... Confirm in wallet', 'info');
-        mintBtn.disabled = true;
         
-        const tx = await contract.mint(quantity);
-        
+        const mintTx = await contract.mint(quantity);
         showMessage('Minting in progress...', 'info');
         
-        const receipt = await tx.wait();
+        await mintTx.wait();
         
         showMessage(`Successfully minted ${quantity} x402Cat${quantity > 1 ? 's' : ''}! 🎉`, 'success');
         
         await loadContractData();
         
-        mintBtn.disabled = false;
         approveBtn.disabled = false;
         
     } catch (error) {
-        console.error('Minting error:', error);
+        console.error('Transaction error:', error);
         
-        let errorMessage = 'Minting failed';
+        let errorMessage = 'You need USDC to mint';
         
         if (error.code === 4001 || error.code === 'ACTION_REJECTED') {
             errorMessage = 'Transaction cancelled';
@@ -232,7 +203,7 @@ mintBtn.addEventListener('click', async () => {
         }
         
         showMessage(errorMessage, 'error');
-        mintBtn.disabled = false;
+        approveBtn.disabled = false;
     }
 });
 
@@ -242,8 +213,10 @@ const walletProvider = window.rabby || window.phantom?.ethereum || window.Binanc
 if (walletProvider) {
     walletProvider.on('accountsChanged', (accounts) => {
         if (accounts.length === 0) {
+            // User disconnected wallet - reload page to reset state
             location.reload();
         } else {
+            // User switched account - reload page to allow reconnecting
             location.reload();
         }
     });
